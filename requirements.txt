@@ -1,0 +1,46 @@
+# Install packages
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+python-multipart
+python-dotenv
+pydantic
+pydantic-settings
+
+# LangChain & AWS
+langchain
+langchain-aws
+langchain-community
+langchain-core
+langgraph
+boto3
+
+# # YOLO & Image Processing
+# ultralytics
+# opencv-python
+# pillow
+# Database
+sqlalchemy==2.0.27
+psycopg2-binary==2.9.9
+
+# Vector Store (RAG)
+chromadb==0.4.22
+sentence-transformers==2.5.1
+
+# PDF/Document Processing
+pypdf==4.0.1
+python-magic==0.4.27
+pillow==10.2.0
+# Gradio
+gradio
+
+
+
+# Utilities
+python-dotenv==1.0.1
+pydantic==2.6.1
+pydantic-settings==2.1.0
+
+# Observability
+prometheus-client==0.19.0

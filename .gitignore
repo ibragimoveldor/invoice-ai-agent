@@ -1,0 +1,38 @@
+# Environment
+.env
+*.env
+
+# Database
+*.db
+*.db-journal
+
+# Uploads
+uploads/
+*.pdf
+*.jpg
+*.png
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vector DB
+chroma_db/
+
+# OS
+.DS_Store
+Thumbs.db
