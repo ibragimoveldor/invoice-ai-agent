@@ -298,7 +298,7 @@ invoice-intelligence-agent/
 - **Benefit:** Explainable decisions for finance teams
 
 ---
-
+<!-- 
 ## 💰 Cost Estimate
 
 **Development/Demo:**
@@ -310,7 +310,7 @@ invoice-intelligence-agent/
 - Compute (ECS): ~$50/month
 - Database (RDS): ~$30/month
 - Storage (S3): ~$10/month
-- **Total: ~$240/month**
+- **Total: ~$240/month** -->
 
 ---
 
@@ -330,7 +330,7 @@ invoice-intelligence-agent/
 
 ---
 
-## 🚀 Production Deployment
+<!-- ## 🚀 Production Deployment
 
 **For production:**
 1. Migrate to PostgreSQL (SQLite not for production)
@@ -339,7 +339,7 @@ invoice-intelligence-agent/
 4. Switch to Pinecone or Pgvector for RAG
 5. Add CloudWatch monitoring
 6. Set up CI/CD pipeline
-7. Enable auto-scaling
+7. Enable auto-scaling -->
 
 ---
 
@@ -352,7 +352,7 @@ invoice-intelligence-agent/
 
 ---
 
-## 🛣️ Roadmap
+<!-- ## 🛣️ Roadmap
 
 - [ ] Duplicate invoice detection
 - [ ] Batch processing endpoint
@@ -360,7 +360,7 @@ invoice-intelligence-agent/
 - [ ] Budget tracking and forecasting
 - [ ] Multi-currency support
 - [ ] QuickBooks/Xero integration
-- [ ] Mobile app (iOS/Android)
+- [ ] Mobile app (iOS/Android) -->
 
 ---
 
