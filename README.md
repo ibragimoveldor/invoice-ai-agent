@@ -28,23 +28,40 @@ flowchart TD
     A[User Uploads Invoice] --> B[FastAPI Backend]
     B --> C{LangGraph Orchestration}
     
-    C --> D[Step 1: Extract Data<br/>Claude Vision API]
-    D --> E[Step 2: Calculate Priority<br/>Payment Scoring]
-    E --> F[Step 3: AI Analysis<br/>Claude Reasoning + RAG]
+    subgraph "Invoice Processing Workflow"
+        C --> D[Step 1: Extract DataClaude Vision API]
+        D --> E[Step 2: Calculate PriorityPayment Scoring]
+        E --> F[Step 3: AI AnalysisClaude + RAG Context]
+    end
     
     F --> G[(SQLite Database)]
-    F --> H[(ChromaDB Vector Store)]
+    F --> H[(ChromaDB RAG)]
     
-    G --> I[Return Results]
+    G --> I[Return Analysis Results]
     H --> I
     
-    I --> B
+    I --> J[User Asks Questions]
+    
+    subgraph "Chat Workflow"
+        J --> K{LangGraph Chat Agent}
+        K --> L{Detect Intent}
+        L -->|Needs SQL| M[Generate SQL Query]
+        L -->|Direct Answer| N[Answer with RAG Context]
+        M --> O[Execute Query]
+        O --> N
+        N --> P[Retrieve Similar Cases from RAG]
+        P --> Q[Claude Generates Response]
+    end
+    
+    Q --> R[Chat Response]
     
     style D fill:#FF6B6B,color:#fff
     style F fill:#FF6B6B,color:#fff
+    style Q fill:#FF6B6B,color:#fff
     style E fill:#51CF66,color:#fff
     style G fill:#868E96,color:#fff
     style H fill:#868E96,color:#fff
+    style K fill:#4A90E2,color:#fff
 ```
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed diagrams.
@@ -363,8 +380,8 @@ This project is for educational and portfolio purposes.
 
 **Eldor Ibragimov**
 - GitHub: [@ibragimoveldor](https://github.com/ibragimoveldor)
-- LinkedIn: [Your LinkedIn]
-- Portfolio: [Your Website]
+- LinkedIn: [https://www.linkedin.com/in/eldor-ibragimov/]
+- Portfolio: [https://eldoribragimov.cv/]
 
 ---
 

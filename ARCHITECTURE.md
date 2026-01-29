@@ -482,7 +482,7 @@ graph LR
 
 ---
 
-## Cost Breakdown
+<!-- ## Cost Breakdown
 
 | Component | Dev Cost | Production (1000 invoices/month) |
 |-----------|----------|----------------------------------|
@@ -496,7 +496,7 @@ graph LR
 - Cache common analyses
 - Batch API requests
 - Use reserved instances
-- Implement request throttling
+- Implement request throttling -->
 
 ---
 

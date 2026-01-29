@@ -258,6 +258,77 @@ Return ONLY the SQL query, no explanation."""
     
     return state
 
+def execute_sql_query(state: ChatState) -> ChatState:
+    """Execute SQL query safely and format results"""
+    
+    if not state.get('needs_sql_query'):
+        return state
+    
+    sql = state.get('sql_query', '').strip()
+    
+    if not sql:
+        return state
+    
+    print("   📊 Executing SQL query...")
+    
+    try:
+        # Safety check - only SELECT allowed
+        if not sql.upper().startswith('SELECT'):
+            state['sql_results'] = "⚠️ Only SELECT queries are allowed for safety"
+            return state
+        
+        # Execute query
+        from app.database import get_db
+        from sqlalchemy import text
+        
+        db = next(get_db())
+        
+        try:
+            result = db.execute(text(sql))
+            rows = result.fetchall()
+            
+            # Format results as markdown table
+            if rows:
+                # Get column names
+                columns = result.keys()
+                
+                # Build markdown table
+                table = "| " + " | ".join(columns) + " |\n"
+                table += "|" + "|".join(["---" for _ in columns]) + "|\n"
+                
+                # Add rows (limit to 20 for display)
+                for row in rows[:20]:
+                    formatted_row = []
+                    for val in row:
+                        if val is None:
+                            formatted_row.append("NULL")
+                        elif isinstance(val, float):
+                            formatted_row.append(f"{val:,.2f}")
+                        else:
+                            formatted_row.append(str(val))
+                    table += "| " + " | ".join(formatted_row) + " |\n"
+                
+                if len(rows) > 20:
+                    table += f"\n*(Showing first 20 of {len(rows)} results)*"
+                
+                state['sql_results'] = table
+                print(f"   ✅ Query returned {len(rows)} rows")
+            else:
+                # ← IMPROVED: Better handling of no results
+                state['sql_results'] = "ℹ️ Query executed successfully but returned no results."
+                print("   ℹ️ Query returned no results")
+                
+        finally:
+            db.close()
+            
+    except Exception as e:
+        # ← IMPROVED: Better error messages
+        error_msg = f"Error executing query: {str(e)}"
+        print(f"   ❌ {error_msg}")
+        state['sql_results'] = f"⚠️ {error_msg}\n\nNote: Available urgency values are 'urgent', 'high', 'medium', 'low'"
+        # Don't set state['error'] - let Claude handle it gracefully
+    
+    return state
 
 # In answer_question function in chat workflow:
 
@@ -309,18 +380,19 @@ def answer_question(state: ChatState) -> ChatState:
 # ==================== BUILD CHAT GRAPH ====================
 
 def create_chat_graph():
-    """Create chat workflow"""
+    """Create chat workflow with SQL execution"""
     workflow = StateGraph(ChatState)
     
     # Add nodes
     workflow.add_node("detect_intent", detect_sql_intent)
     workflow.add_node("generate_sql", generate_sql_query)
+    workflow.add_node("execute_sql", execute_sql_query)  # ← NEW NODE
     workflow.add_node("answer", answer_question)
     
     # Define edges
     workflow.set_entry_point("detect_intent")
     
-    # Conditional routing
+    # Conditional routing after intent detection
     def route_after_intent(state):
         return "generate_sql" if state['needs_sql_query'] else "answer"
     
@@ -333,7 +405,12 @@ def create_chat_graph():
         }
     )
     
-    workflow.add_edge("generate_sql", "answer")
+    # After SQL generation, execute it
+    workflow.add_edge("generate_sql", "execute_sql")  # ← NEW EDGE
+    
+    # After execution, answer
+    workflow.add_edge("execute_sql", "answer")  # ← NEW EDGE
+    
     workflow.add_edge("answer", END)
     
     return workflow.compile()

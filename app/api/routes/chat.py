@@ -42,8 +42,8 @@ async def chat(
     Chat with AI about invoices
     
     Supports:
-    - General questions about specific invoice
-    - Text-to-SQL queries across all invoices
+    - Questions about specific invoice
+    - Text-to-SQL queries across all invoices (working!)
     - Follow-up questions in conversation
     """
     print("\n" + "="*60)
@@ -57,7 +57,6 @@ async def chat(
     context = {}
     
     if request.invoice_id:
-        # Get specific invoice context
         invoice = get_invoice(db, request.invoice_id)
         if not invoice:
             raise HTTPException(404, f"Invoice not found: {request.invoice_id}")
@@ -94,7 +93,7 @@ async def chat(
             "error": ""
         })
         
-        if result.get('error'):
+        if result.get('error') and not result.get('sql_results'):
             raise HTTPException(500, f"Chat failed: {result['error']}")
         
         response_text = result['response']
